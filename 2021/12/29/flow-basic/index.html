@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>mayiyang</title>
-  <meta name="keywords" content="">
-  <meta name="description" content="mayiyang">
+  <title>网络流基础 | mayiyang</title>
+  <meta name="keywords" content=" algorithm , flow ">
+  <meta name="description" content="网络流基础 | mayiyang">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="页面未找到！">
 <meta property="og:type" content="website">
@@ -51,7 +51,7 @@
 </div>
 
 <body>
-<aside class="nav mobile">
+<aside class="nav">
     <div class="nav-left">
         <a href="/" class="avatar_target">
     <img class="avatar" src="/img/avatar.jpg" />
@@ -276,12 +276,52 @@
         </div>
     </div>
 </aside>
-<div class="post index">
+<div class="post">
     <div class="pjax">
-        <article class="index">
-            <div class="toc-ref">
+        <article id="post-flow-basic" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#mayiyang’s-blog"><span class="toc-text">mayiyang’s blog</span></a></li></ol>
+        <h1 class="article-title">网络流基础</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            
+                <a  data-rel="algorithm">algorithm</a>/
+            
+                <a  data-rel="flow">flow</a>/
+            
+                <a  data-rel="basic">basic</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            
+            <a class="color5">algorithm</a>
+            
+            <a class="color5">flow</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+        创建时间:<time class="date" title='更新时间: 2021-12-29 20:52:50'>2021-12-29 20:39</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        <span>字数:1k</span>
+        
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#相关概念"><span class="toc-text">相关概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最大流"><span class="toc-text">最大流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#割"><span class="toc-text">割</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最小费用最大流"><span class="toc-text">最小费用最大流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#无源汇上下界可行流"><span class="toc-text">无源汇上下界可行流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#有源汇上下界可行流"><span class="toc-text">有源汇上下界可行流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#有源汇上下界最大流"><span class="toc-text">有源汇上下界最大流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#有源汇上下界最小流"><span class="toc-text">有源汇上下界最小流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#有源汇上下界最小费用可行流"><span class="toc-text">有源汇上下界最小费用可行流</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -294,13 +334,91 @@
     }
 </style>
 </div>
-            <h1 id="mayiyang’s-blog"><a href="#mayiyang’s-blog" class="headerlink" title="mayiyang’s blog"></a>mayiyang’s blog</h1><p>文章共<code class="site_word_count"></code>字</p>
-<p>页面全局快捷键 <a href='http://yelog.org/2017/03/24/3-hexo-shortcuts/' target="_blank" rel="noopener">3-hexo快捷键说明</a></p>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a><strong>相关概念</strong></h2><p>$V$ 表示所有结点的集合<br>$E$ 表示所有边的集合<br>$G=(V,E)$ ,表示整个图<br>$s$ 表示源点，$t$ 表示汇点<br>每条边 $(u,v)$ ,有容量 $c(u,v)$($c(u,v)\geq0$),流量 $f(u,v)$<br>$c(u,v)=0$ 则表示$(u,v)$不在网络中<br><strong>三个性质</strong></p>
+<ol>
+<li><strong>容量限制</strong> $f(u,v)\leq c(u,v)$</li>
+<li><strong>反对称性</strong> $f(u,v)=-f(v,u)$</li>
+<li><strong>流量平衡</strong> $\sum_{u\in V} f(v,u)=0$</li>
+</ol>
+<h2 id="最大流"><a href="#最大流" class="headerlink" title="最大流"></a><strong>最大流</strong></h2><p><strong>流量</strong>: $|f|=\sum_{v\in V}f(s,v)$</p>
+<p><strong>最大流</strong>: 在满足网络流三条性质时，$|f|$的最大值</p>
+<p><strong>残量网络</strong>(也就是一条弧还能有多少流量经过</p>
+<p><strong>残量网络</strong> $G_f$(如果网络中一条边 $cap = 0$，认为不在残量网络中)  </p>
+<p><strong>残量网络边集</strong> $E_f$</p>
+<p><strong>后向弧</strong>(实现时常用$i \oplus 1$):使得操作可以反悔</p>
+<p><strong>增广路</strong>: 在残量网络中一条s通往t的路径，其中任意一条弧都有 $r(u,v)&gt;0$</p>
+<p><strong>增广路算法</strong>: 每次找一条最短的增广路径，然后沿着路径修改流量，无增广路时，流为最大流。</p>
+<p>下面把 $f,r,c$ 的定义域扩展为点集 $f(X,Y)=\sum_{x\in X} \sum_{y\in Y} f(x,y) $</p>
+<h2 id="割"><a href="#割" class="headerlink" title="割"></a><strong>割</strong></h2><p><strong>定义</strong>: $S+T=V,s\in S,t\in T$</p>
+<p><strong>注意</strong>: 使用割做题时，不要认为 $S$ 或 $T$ 需要联通。</p>
+<p><strong>一些结论</strong></p>
+<ol>
+<li><blockquote>
+<p>$f(X,X)=0$<br>$f(X,Y) = -f(Y,X)$<br>$F(X \bigcup Y,Z)=f(X,Z)+f(Y,Z)$<br>$F(X,Y \bigcup Z)=F(X,Y)+F(X,Z)$</p>
+</blockquote>
+</li>
+<li><p>不包含s和t的点集,与它相关联的边上的流量值和为 0</p>
+<blockquote>
+<p>$f(X,V)=\sum_{x\in X}(\sum_{v\in V} f(x,v))=\sum_{x\in X}0 = 0$</p>
+</blockquote>
+</li>
+<li><p><strong>任何割的流量等于整个网络的流量</strong></p>
+<blockquote>
+<p>$f(S,T)=f(S,V)-f(S,S)=f(s,V)+f(S-s,V)=|f|$</p>
+</blockquote>
+</li>
+<li><p>任何割的容量大于等于整个网络的流量 $|f| \leq c(S,T)$</p>
+<blockquote>
+<p>$f(S,T)=\sum_{x\in S}\sum_{y\in T} f(x,y) \leq\sum_{x\in S}\sum_{y\in T} c(x,y)=c(S,T)$</p>
+</blockquote>
+</li>
+</ol>
+<p><strong>最小割</strong>: 所有可能的割中，容量最小的割<br><strong>最大流最小割定理</strong>:<br>对于一个网络流图 $G=(V,E)$，其中有源点 $s$ 和汇点 $t$，下面三个条件是等价的：</p>
+<ol>
+<li>流 $f$ 是图 $G$ 的最大流</li>
+<li>残量网络不存在增广路</li>
+<li>对于 $G$ 的某一个割 $(S,T)$，此时 $f = C(S,T)$</li>
+</ol>
+<p>$1 \rightarrow 2$: 根据网络流算法过程易得。</p>
+<p>$3 \rightarrow 1$: 由上述结论 $4$ ，任何总流量不超过最小割容量，$f$ 必为最大流。</p>
+<p>$2 \rightarrow 3$: <strong>残量网络不存在增广路</strong>，定义 $S$ 为当前残量网络中 $s$ 能够到达的点，$T = V - S$ 。$(S, T)$ 显然为割。</p>
+<p>$\forall u \in S,v \in T$，有 $f(u,v)=c(u,v)$ 。所以 $f(S,T)=\sum f(u,v)=\sum c(u,v)=C(S,T)$ 。</p>
+<h2 id="最小费用最大流"><a href="#最小费用最大流" class="headerlink" title="最小费用最大流"></a><strong>最小费用最大流</strong></h2><h2 id="无源汇上下界可行流"><a href="#无源汇上下界可行流" class="headerlink" title="无源汇上下界可行流"></a><strong>无源汇上下界可行流</strong></h2><p>可行流：满足上下界和流量守恒<br><strong>核心思路: 在可行流上增流调整</strong>。<br>建图，源点为 $S$ ，汇点为 $T$ 。<br>对于原图中每条边 $u\rightarrow v$，新图建 $u \rightarrow v$ 流量为 $high - low$。<br>记 <script type="math/tex">g(x) = \sum_{to_i = x} low_i - \sum_{from_i = x} low_i</script><br>$g(x) &gt; 0$ 时，$S \rightarrow x$ 流量 $g(x)$；<br>$g(x) &lt; 0$ 时，$x \rightarrow T$ 流量 $-g(x)$。<br>新连的<strong>附加边全部流满</strong>才为可行</p>
+<h2 id="有源汇上下界可行流"><a href="#有源汇上下界可行流" class="headerlink" title="有源汇上下界可行流"></a><strong>有源汇上下界可行流</strong></h2><p>思想同上，只是还要 $T \rightarrow S$ 上下界 $[0, +\infty]$ 的边。</p>
+<h2 id="有源汇上下界最大流"><a href="#有源汇上下界最大流" class="headerlink" title="有源汇上下界最大流"></a><strong>有源汇上下界最大流</strong></h2><ol>
+<li>先跑出可行流，摘除 $T \rightarrow S$ 的边，此时满足有源汇流量守恒。</li>
+<li>残量网络上跑出最大流，与附加流合并即可求得。</li>
+</ol>
+<h2 id="有源汇上下界最小流"><a href="#有源汇上下界最小流" class="headerlink" title="有源汇上下界最小流"></a><strong>有源汇上下界最小流</strong></h2><ol>
+<li>先跑出可行流，摘除 $T \rightarrow S$ 的边，此时满足有源汇流量守恒。</li>
+<li>在附加流的基础上，减去 $dinic(T, S)$ 的结果。本质上是退流。</li>
+</ol>
+<h2 id="有源汇上下界最小费用可行流"><a href="#有源汇上下界最小费用可行流" class="headerlink" title="有源汇上下界最小费用可行流"></a><strong>有源汇上下界最小费用可行流</strong></h2><p>建图方式与有源汇上下界可行流基本相同，只是原始边加上费用。</p>
 
-        </article>
-        <!-- 
-        --->
-        
+      
+       
+    </div>
+</article>
+
+
+
+<div class="article_copyright">
+    <p><span class="copy-title">文章标题:</span>网络流基础</p>
+    <p><span class="copy-title">文章字数:</span><span class="post-count">1k</span></p>
+    <p><span class="copy-title">本文作者:</span><a  title="mayiyang">mayiyang</a></p>
+    <p><span class="copy-title">发布时间:</span>2021-12-29, 20:39:02</p>
+    <p><span class="copy-title">最后更新:</span>2021-12-29, 20:52:50</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2021/12/29/flow-basic/" title="网络流基础">http://wlmayiyang.github.io/2021/12/29/flow-basic/</a>
+    <p>
+        <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+    </p>
+</div>
+
+
+
     <div id="comments"></div>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
 
@@ -322,6 +440,53 @@
 </script>
 
 
+
+
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<input type="hidden" id="MathJax-js"
+        value="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</input>
+    
+
+
+
+
     </div>
     <div class="copyright">
         <p class="footer-entry">©2019 mayiyang</p>
@@ -340,11 +505,10 @@
 
     </div>
 </div>
-<!-- <div class="acParent"></div>
-
+<div class="acParent"></div>
+<!-- 
 
 --->
-
 </body>
 <script src="/js/jquery.pjax.js?v=1.0.1" ></script>
 
